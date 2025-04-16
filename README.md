@@ -76,26 +76,25 @@ npm run prod
 - `npm run prod` - Run compiled server in production mode
 - `npm run inspect` - Run MCP inspector on the server
 
-## API
+## Usage
 
-### Endpoints
+Add server to Cursor:
 
-#### SSE Connection
-GET /sse
+```json
+"mcpServers": {
+    ...
+    "transaction-sim-server": {
+      "url": <URL to your deployed server>
+    }
+}
 ```
-Establishes Server-Sent Events connection for real-time updates
 
-#### Message Processing
-```
-POST /messages?sessionId={sessionId}
-```
-Handles message processing for specific sessions
 
 ### Transaction Simulation
 
 The service accepts transaction parameters and returns detailed analysis:
 
-```typescript
+```
 {
   networkId: string,    // Network ID for the transaction
   from: string,        // Sender address
@@ -105,14 +104,16 @@ The service accepts transaction parameters and returns detailed analysis:
   useEmojis?: boolean  // Enable/disable emojis in response
 }
 ```
+for example, let's take a random transaction from block explorer, type the following into the Cursor chat window, once you have set up your MCP server:
 
-## Security
+```
+Computer, please determine if this transaction is safe:
 
-- HTTPS encryption in production
-- CORS protection
-- Environment variable security
-- API key validation
-- Session-based connections
+networkId: 8453
+from: 0x331F914d9447F0E4BEcAB98d62BEA00dADb8B591
+to: 0x24fcFC492C1393274B6bcd568ac9e225BEc93584
+data: 0x095ea7b3000000000000000000000000cf77a3ba9a5ca399b7c97c74d54e5b1beb874e43000000000000000000000000000000000000000000002e961634f872dfc30000
+```
 
 ## Dependencies
 
