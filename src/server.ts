@@ -17,7 +17,7 @@ dotenv.config();
 const server = new McpServer({
   name: "Ethereum Transaction Analyzer",
   version: "0.9.0",
-  timeout: 60000 // 1 minute in milliseconds
+  timeout: 30000 // 1 minute in milliseconds
 });
 
 // Create transport
@@ -47,6 +47,7 @@ app.use(cors({
 }));
 
 app.get("/sse", async (_: Request, res: Response) => {
+  console.log(`sse called`);
   const transport = new SSEServerTransport('/messages', res);
   transports[transport.sessionId] = transport;
   res.on("close", () => {
@@ -56,6 +57,7 @@ app.get("/sse", async (_: Request, res: Response) => {
 });
 
 app.post("/messages", async (req: Request, res: Response) => {
+  console.log(`messages called: ${JSON.stringify(req.query)}`);
   const sessionId = req.query.sessionId as string;
   const transport = transports[sessionId];
   if (transport) {
@@ -84,6 +86,7 @@ server.tool(
     networkId: string;
     useEmojis?: boolean;
   }) => {
+    console.log(`simulate-transaction called with from: ${from}, to: ${to}, value: ${value}, data: ${data}, networkId: ${networkId}, useEmojis: ${useEmojis}`);
     try {
       // Create transaction object
       const tx = {
@@ -103,14 +106,14 @@ server.tool(
         const response: JSON = await getTenderlyResponse(tx);
         preProcessedResult = await processTransactionData(response);
         aiInterpretation = await useOpenAI(preProcessedResult, useEmojis);
+        console.log(`aiInterpretation: ${aiInterpretation}`);
       }
 
       return {
         content: [{
           type: "text",
           text: JSON.stringify({
-            aiInterpretation: aiInterpretation,
-            preProcessedResult: preProcessedResult
+            aiInterpretation: aiInterpretation
           }, null, 2)
         }]
       };

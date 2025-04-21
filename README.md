@@ -78,17 +78,31 @@ npm run prod
 
 ## Usage
 
-Add server to Cursor:
+### Add server to Cursor
 
 ```json
 "mcpServers": {
     ...
     "transaction-sim-server": {
-      "url": <URL to your deployed server>
+      "url": "<URL to your deployed server>"
     }
 }
 ```
 
+### Add server to Claude Desktop
+
+```json
+"mcpServers": {
+  ...
+  "transaction-simulator": {
+    "command": "npx",
+    "args": [
+      "mcp-remote",
+      "<URL to your deployed server>"
+    ]
+  }
+}
+```
 
 ### Transaction Simulation
 

@@ -152,6 +152,10 @@ async function decodeTransactionData(data: string): Promise<string> {
 }
 
 function transformStateDiffToBalanceDiff(stateDiff: any[]): BalanceDiff[] {
+    if (stateDiff == null || stateDiff.length === 0) {
+        return [];
+    }
+
     return stateDiff.map(diff => ({
         address: diff.address,
         original: diff.original,
@@ -163,7 +167,6 @@ export async function processTransactionData(result: any): Promise<TransactionAn
     const txInfo = result.transaction.transaction_info;
     const assetChanges = txInfo.asset_changes || [];
 
-    // console.log(`txnetwork_id: ${result.transaction.network_id}`);
     const networkId = parseInt(result.transaction.network_id);
     const provider = await WaterfallRpc.createProvider(networkId);
 
@@ -247,6 +250,8 @@ export async function processTransactionData(result: any): Promise<TransactionAn
 
     //grab the function name:
     const functionName = await decodeTransactionData(result.transaction.input);
+
+    console.log(`Balance diff: ${JSON.stringify(txInfo.balance_diff)}`);
 
     const balanceDiffs : BalanceDiff[] = transformStateDiffToBalanceDiff(txInfo.balance_diff);
 
